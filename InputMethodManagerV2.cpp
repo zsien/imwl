@@ -1,15 +1,45 @@
 #include "InputMethodManagerV2.h"
 
 #include "InputMethodV2.h"
+#include "common.h"
+#include "qwayland-server-input-method-unstable-v2.h"
 
-#include <QtWaylandCompositor/QWaylandSeat>
-
-void InputMethodManagerV2::zwp_input_method_manager_v2_get_input_method(Resource *resource,
-                                                                        struct ::wl_resource *seat,
-                                                                        uint32_t input_method)
+class InputMethodManagerV2Private : public QtWaylandServer::zwp_input_method_manager_v2
 {
-    auto *im = new InputMethodV2(resource->client(), input_method, InputMethodV2::interface()->version);
-    m_inputmethods.emplace(seat, im);
+public:
+    InputMethodManagerV2Private(InputMethodManagerV2 *q)
+        : q(q)
+    {
+    }
+
+    ~InputMethodManagerV2Private() { }
+
+protected:
+    void zwp_input_method_manager_v2_get_input_method(Resource *resource,
+                                                      struct ::wl_resource *seat,
+                                                      uint32_t input_method) override
+    {
+        auto *im = new InputMethodV2(q);
+        im->init(resource->client(), input_method);
+        auto [iter, r] = q->m_inputmethods.emplace(seat, im);
+
+        QObject::connect(im, &InputMethodV2::destroyed, q, [this, iter = iter]() {
+            q->m_inputmethods.erase(iter);
+        });
+    }
+
+    void zwp_input_method_manager_v2_destroy(Resource *resource) override { q->deleteLater(); }
+
+private:
+    InputMethodManagerV2 *q;
+};
+
+InputMethodManagerV2::InputMethodManagerV2(QObject *parent)
+    : QObject(parent)
+    , d(new InputMethodManagerV2Private(this))
+{
 }
 
-void InputMethodManagerV2::zwp_input_method_manager_v2_destroy(Resource *resource) { }
+InputMethodManagerV2::~InputMethodManagerV2() { }
+
+INIT_FUNCS(InputMethodManagerV2)

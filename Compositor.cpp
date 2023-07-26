@@ -18,9 +18,12 @@ void Compositor::create()
 {
     QWaylandCompositor::create();
 
-    m_textInputManager = new TextInputManagerV3(display(), TextInputManagerV3::interface()->version);
-    m_textInputMethodManager =
-        new InputMethodManagerV2(display(), InputMethodManagerV2::interface()->version);
-    m_virtualKeyboardManager =
-        new VirtualKeyboardManagerV1(display(), VirtualKeyboardManagerV1::interface()->version);
+    m_textInputManager = new TextInputManagerV3(this);
+    m_textInputManager->init(display());
+
+    m_textInputMethodManager = new InputMethodManagerV2(this);
+    m_textInputMethodManager->init(display());
+
+    m_virtualKeyboardManager = new VirtualKeyboardManagerV1(this);
+    m_virtualKeyboardManager->init(display());
 }

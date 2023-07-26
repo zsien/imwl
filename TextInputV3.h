@@ -1,28 +1,28 @@
 #ifndef TEXTINPUTV3_H
 #define TEXTINPUTV3_H
 
-#include "qwayland-server-text-input-unstable-v3.h"
+#include <QObject>
 
-class TextInputV3 : public QtWaylandServer::zwp_text_input_v3
+struct wl_client;
+struct wl_display;
+struct wl_resource;
+
+class TextInputV3Private;
+
+class TextInputV3 : public QObject
 {
-public:
-    using zwp_text_input_v3::zwp_text_input_v3;
+    Q_OBJECT
 
-protected:
-    void zwp_text_input_v3_destroy(Resource *resource) override;
-    void zwp_text_input_v3_enable(Resource *resource) override;
-    void zwp_text_input_v3_disable(Resource *resource) override;
-    void zwp_text_input_v3_set_surrounding_text(Resource *resource,
-                                                const QString &text,
-                                                int32_t cursor,
-                                                int32_t anchor) override;
-    void zwp_text_input_v3_set_text_change_cause(Resource *resource, uint32_t cause) override;
-    void zwp_text_input_v3_set_content_type(Resource *resource,
-                                            uint32_t hint,
-                                            uint32_t purpose) override;
-    void zwp_text_input_v3_set_cursor_rectangle(
-        Resource *resource, int32_t x, int32_t y, int32_t width, int32_t height) override;
-    void zwp_text_input_v3_commit(Resource *resource) override;
+public:
+    TextInputV3(QObject *parent);
+    ~TextInputV3();
+
+    void init(struct ::wl_client *client, uint32_t id);
+    void init(struct ::wl_display *display);
+    void init(struct ::wl_resource *resource);
+
+private:
+    std::unique_ptr<TextInputV3Private> d;
 };
 
 #endif // !TEXTINPUTV3_H

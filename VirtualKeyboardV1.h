@@ -1,18 +1,28 @@
 #ifndef VIRTUALKEYBOARDV1_H
 #define VIRTUALKEYBOARDV1_H
 
-#include "qwayland-server-virtual-keyboard-unstable-v1.h"
+#include <QObject>
 
-class VirtualKeyboardV1 : public QtWaylandServer::zwp_virtual_keyboard_v1
+struct wl_client;
+struct wl_display;
+struct wl_resource;
+
+class VirtualKeyboardV1Private;
+
+class VirtualKeyboardV1 : public QObject
 {
-public:
-    using zwp_virtual_keyboard_v1::zwp_virtual_keyboard_v1;
+    Q_OBJECT
 
-protected:
-    void zwp_virtual_keyboard_v1_keymap(Resource *resource, uint32_t format, int32_t fd, uint32_t size) override;
-    void zwp_virtual_keyboard_v1_key(Resource *resource, uint32_t time, uint32_t key, uint32_t state) override;
-    void zwp_virtual_keyboard_v1_modifiers(Resource *resource, uint32_t mods_depressed, uint32_t mods_latched, uint32_t mods_locked, uint32_t group) override;
-    void zwp_virtual_keyboard_v1_destroy(Resource *resource) override;
+public:
+    VirtualKeyboardV1(QObject *paernt);
+    ~VirtualKeyboardV1();
+
+    void init(struct ::wl_client *client, uint32_t id);
+    void init(struct ::wl_display *display);
+    void init(struct ::wl_resource *resource);
+
+private:
+    std::unique_ptr<VirtualKeyboardV1Private> d;
 };
 
 #endif // !VIRTUALKEYBOARDV1_H

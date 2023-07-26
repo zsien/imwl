@@ -1,17 +1,32 @@
 #ifndef VIRTUALKEYBOARDMANAGERV1_H
 #define VIRTUALKEYBOARDMANAGERV1_H
 
-#include "qwayland-server-virtual-keyboard-unstable-v1.h"
+#include <QObject>
 
-class VirtualKeyboardManagerV1 : public QtWaylandServer::zwp_virtual_keyboard_manager_v1
+struct wl_client;
+struct wl_display;
+struct wl_resource;
+
+class VirtualKeyboardManagerV1Private;
+class VirtualKeyboardV1;
+
+class VirtualKeyboardManagerV1 : public QObject
 {
-public:
-    using zwp_virtual_keyboard_manager_v1::zwp_virtual_keyboard_manager_v1;
+    Q_OBJECT
 
-protected:
-    void zwp_virtual_keyboard_manager_v1_create_virtual_keyboard(Resource *resource,
-                                                                 struct ::wl_resource *seat,
-                                                                 uint32_t id) override;
+    friend class VirtualKeyboardManagerV1Private;
+
+public:
+    VirtualKeyboardManagerV1(QObject *parent);
+    ~VirtualKeyboardManagerV1();
+
+    void init(struct ::wl_client *client, uint32_t id);
+    void init(struct ::wl_display *display);
+    void init(struct ::wl_resource *resource);
+
+private:
+    std::unique_ptr<VirtualKeyboardManagerV1Private> d;
+    std::unordered_map<struct ::wl_resource *, VirtualKeyboardV1 *> m_virtualKeyboards;
 };
 
 #endif // !VIRTUALKEYBOARDMANAGERV1_H

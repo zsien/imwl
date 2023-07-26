@@ -13,6 +13,7 @@ class VirtualKeyboardManagerV1;
 class Compositor : public QWaylandCompositor
 {
     Q_OBJECT
+
 public:
     Compositor();
     ~Compositor() override;
