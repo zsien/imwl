@@ -3,12 +3,8 @@
 
 #include "qwayland-server-text-input-unstable-v3.h"
 
-#include <QObject>
-
-class TextInputV3 : public QtWaylandServer::zwp_text_input_v3, public QObject
+class TextInputV3 : public QtWaylandServer::zwp_text_input_v3
 {
-    Q_OBJECT
-
 public:
     using zwp_text_input_v3::zwp_text_input_v3;
 
