@@ -1,6 +1,8 @@
 #ifndef TEXTINPUTV3_H
 #define TEXTINPUTV3_H
 
+#include "common.h"
+
 #include <QObject>
 
 struct wl_client;
@@ -17,9 +19,7 @@ public:
     TextInputV3(QObject *parent);
     ~TextInputV3();
 
-    void init(struct ::wl_client *client, uint32_t id);
-    void init(struct ::wl_display *display);
-    void init(struct ::wl_resource *resource);
+    INIT_FUNCS_DEF
 
 private:
     std::unique_ptr<TextInputV3Private> d;

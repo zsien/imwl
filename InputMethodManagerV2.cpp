@@ -19,16 +19,17 @@ protected:
                                                       struct ::wl_resource *seat,
                                                       uint32_t input_method) override
     {
-        auto *im = new InputMethodV2(q);
-        im->init(resource->client(), input_method);
-        auto [iter, r] = q->m_inputmethods.emplace(seat, im);
+        auto iter = q->m_inputmethods.find(seat);
+        if (iter == q->m_inputmethods.end()) {
+            auto *im = new InputMethodV2(q);
+            auto [i, r] = q->m_inputmethods.emplace(seat, im);
+            iter = i;
+        }
 
-        QObject::connect(im, &InputMethodV2::destroyed, q, [this, iter = iter]() {
-            q->m_inputmethods.erase(iter);
-        });
+        iter->second->add(resource->client(), input_method);
     }
 
-    void zwp_input_method_manager_v2_destroy(Resource *resource) override { q->deleteLater(); }
+    void zwp_input_method_manager_v2_destroy(Resource *resource) override { }
 
 private:
     InputMethodManagerV2 *q;

@@ -1,7 +1,9 @@
 #include "VirtualKeyboardV1.h"
 
-#include "common.h"
 #include "qwayland-server-virtual-keyboard-unstable-v1.h"
+
+#include <QKeyEvent>
+#include <QWaylandSeat>
 
 class VirtualKeyboardV1Private : public QtWaylandServer::zwp_virtual_keyboard_v1
 {
@@ -36,15 +38,19 @@ protected:
     {
     }
 
-    void zwp_virtual_keyboard_v1_destroy(Resource *resource) override { }
+    void zwp_virtual_keyboard_v1_destroy(Resource *resource) override
+    {
+        wl_resource_destroy(resource->handle);
+    }
 
 private:
     VirtualKeyboardV1 *q;
 };
 
-VirtualKeyboardV1::VirtualKeyboardV1(QObject *parent)
+VirtualKeyboardV1::VirtualKeyboardV1(struct ::wl_resource *seat, QObject *parent)
     : QObject(parent)
     , d(new VirtualKeyboardV1Private(this))
+    , m_seat(QWaylandSeat::fromSeatResource(seat))
 {
 }
 

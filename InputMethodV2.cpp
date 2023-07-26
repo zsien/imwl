@@ -39,7 +39,10 @@ protected:
 
     void zwp_input_method_v2_grab_keyboard(Resource *resource, uint32_t keyboard) override { }
 
-    void zwp_input_method_v2_destroy(Resource *resource) override { }
+    void zwp_input_method_v2_destroy(Resource *resource) override
+    {
+        wl_resource_destroy(resource->handle);
+    }
 
 private:
     InputMethodV2 *q;

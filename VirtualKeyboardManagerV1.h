@@ -1,6 +1,8 @@
 #ifndef VIRTUALKEYBOARDMANAGERV1_H
 #define VIRTUALKEYBOARDMANAGERV1_H
 
+#include "common.h"
+
 #include <QObject>
 
 struct wl_client;
@@ -20,13 +22,11 @@ public:
     VirtualKeyboardManagerV1(QObject *parent);
     ~VirtualKeyboardManagerV1();
 
-    void init(struct ::wl_client *client, uint32_t id);
-    void init(struct ::wl_display *display);
-    void init(struct ::wl_resource *resource);
+    INIT_FUNCS_DEF
 
 private:
     std::unique_ptr<VirtualKeyboardManagerV1Private> d;
-    std::unordered_map<struct ::wl_resource *, VirtualKeyboardV1 *> m_virtualKeyboards;
+    std::unordered_map<struct ::wl_resource * /* seat */, VirtualKeyboardV1 *> m_virtualKeyboards;
 };
 
 #endif // !VIRTUALKEYBOARDMANAGERV1_H

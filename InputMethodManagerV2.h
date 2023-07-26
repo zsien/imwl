@@ -1,6 +1,8 @@
 #ifndef INPUTMETHODMANAGERV2_H
 #define INPUTMETHODMANAGERV2_H
 
+#include "common.h"
+
 #include <QObject>
 
 struct wl_client;
@@ -20,13 +22,11 @@ public:
     InputMethodManagerV2(QObject *parent);
     ~InputMethodManagerV2();
 
-    void init(struct ::wl_client *client, uint32_t id);
-    void init(struct ::wl_display *display);
-    void init(struct ::wl_resource *resource);
+    INIT_FUNCS_DEF
 
 private:
     std::unique_ptr<InputMethodManagerV2Private> d;
-    std::unordered_map<struct ::wl_resource *, InputMethodV2 *> m_inputmethods;
+    std::unordered_map<struct ::wl_resource * /* seat */, InputMethodV2 *> m_inputmethods;
 };
 
 #endif // !INPUTMETHODMANAGERV2_H

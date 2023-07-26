@@ -1,7 +1,6 @@
 #include "TextInputManagerV3.h"
 
 #include "TextInputV3.h"
-#include "common.h"
 #include "qwayland-server-text-input-unstable-v3.h"
 
 #include <QtWaylandCompositor/QWaylandSeat>
@@ -15,19 +14,23 @@ public:
     }
 
 protected:
-    void zwp_text_input_manager_v3_destroy(Resource *resource) override { }
+    void zwp_text_input_manager_v3_destroy(Resource *resource) override
+    {
+        wl_resource_destroy(resource->handle);
+    }
 
     void zwp_text_input_manager_v3_get_text_input(Resource *resource,
                                                   uint32_t id,
                                                   struct ::wl_resource *seat) override
     {
-        auto *ti = new TextInputV3(q);
-        ti->init(resource->client(), id);
-        auto [iter, r] = q->m_textInputs.emplace(seat, ti);
+        auto iter = q->m_textInputs.find(seat);
+        if (iter == q->m_textInputs.end()) {
+            auto *ti = new TextInputV3(q);
+            auto [i, r] = q->m_textInputs.emplace(seat, ti);
+            iter = i;
+        }
 
-        QObject::connect(q, &TextInputV3::destroyed, q, [this, iter = iter]() {
-            q->m_textInputs.erase(iter);
-        });
+        iter->second->add(resource->client(), id);
     }
 
 private:

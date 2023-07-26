@@ -1,7 +1,8 @@
 #include "TextInputV3.h"
 
-#include "common.h"
 #include "qwayland-server-text-input-unstable-v3.h"
+
+#include <set>
 
 class TextInputV3Private : public QtWaylandServer::zwp_text_input_v3
 {
@@ -14,11 +15,15 @@ public:
     ~TextInputV3Private() { }
 
 protected:
-    void zwp_text_input_v3_destroy(Resource *resource) override { }
+    void zwp_text_input_v3_destroy(Resource *resource) override
+    {
+        m_enabled.erase(resource);
+        wl_resource_destroy(resource->handle);
+    }
 
-    void zwp_text_input_v3_enable(Resource *resource) override { }
+    void zwp_text_input_v3_enable(Resource *resource) override { m_enabled.emplace(resource); }
 
-    void zwp_text_input_v3_disable(Resource *resource) override { }
+    void zwp_text_input_v3_disable(Resource *resource) override { m_enabled.erase(resource); }
 
     void zwp_text_input_v3_set_surrounding_text(Resource *resource,
                                                 const QString &text,
@@ -44,6 +49,7 @@ protected:
 
 private:
     TextInputV3 *q;
+    std::set<Resource *> m_enabled;
 };
 
 TextInputV3::TextInputV3(QObject *parent)

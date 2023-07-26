@@ -1,6 +1,14 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#define INIT_FUNCS_DEF                                \
+  void init(struct ::wl_client *client, uint32_t id); \
+  void init(struct ::wl_display *display);            \
+  void init(struct ::wl_resource *resource);          \
+                                                      \
+  void add(struct ::wl_client *client);               \
+  void add(struct ::wl_client *client, uint32_t id);
+
 #define INIT_FUNCS(CLASSNAME)                                    \
   void CLASSNAME::init(struct ::wl_client *client, uint32_t id)  \
   {                                                              \
@@ -15,6 +23,16 @@
   void CLASSNAME::init(struct ::wl_resource *resource)           \
   {                                                              \
     d->init(resource);                                           \
+  }                                                              \
+                                                                 \
+  void CLASSNAME::add(struct ::wl_client *client)                \
+  {                                                              \
+    d->add(client, CLASSNAME##Private::interfaceVersion());      \
+  }                                                              \
+                                                                 \
+  void CLASSNAME::add(struct ::wl_client *client, uint32_t id)   \
+  {                                                              \
+    d->add(client, id, CLASSNAME##Private::interfaceVersion());  \
   }
 
 #endif // !COMMON_H

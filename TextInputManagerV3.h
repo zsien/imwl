@@ -1,6 +1,8 @@
 #ifndef TEXTINPUTMANAGERV3_H
 #define TEXTINPUTMANAGERV3_H
 
+#include "common.h"
+
 #include <QObject>
 
 struct wl_client;
@@ -20,13 +22,11 @@ public:
     TextInputManagerV3(QObject *parent);
     ~TextInputManagerV3();
 
-    void init(struct ::wl_client *client, uint32_t id);
-    void init(struct ::wl_display *display);
-    void init(struct ::wl_resource *resource);
+    INIT_FUNCS_DEF
 
 private:
     std::unique_ptr<TextInputManagerV3Private> d;
-    std::unordered_map<struct ::wl_resource *, TextInputV3 *> m_textInputs;
+    std::unordered_map<struct ::wl_resource * /* seat */, TextInputV3 *> m_textInputs;
 };
 
 #endif // !TEXTINPUTMANAGERV3_H
