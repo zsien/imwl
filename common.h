@@ -1,6 +1,23 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include <stdint.h>
+
+uint32_t nextSerial();
+
+template<auto Func>
+class Deleter
+{
+public:
+    template<typename T>
+    void operator()(T *ptr) const
+    {
+        if (ptr) {
+            Func(ptr);
+        }
+    }
+};
+
 #define INIT_FUNCS_DEF                                \
   void init(struct ::wl_client *client, uint32_t id); \
   void init(struct ::wl_display *display);            \
