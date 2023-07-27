@@ -1,7 +1,5 @@
 #include "X11KeyboardGrabber.h"
 
-#include "qwayland-server-input-method-unstable-v2.h"
-
 #include <xcb/xinput.h>
 
 #include <QDebug>
