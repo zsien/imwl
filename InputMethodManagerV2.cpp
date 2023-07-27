@@ -21,7 +21,7 @@ protected:
     {
         auto iter = q->m_inputmethods.find(seat);
         if (iter == q->m_inputmethods.end()) {
-            auto *im = new InputMethodV2(q);
+            auto *im = new InputMethodV2(q->m_core, seat, q);
             auto [i, r] = q->m_inputmethods.emplace(seat, im);
             iter = i;
         }
@@ -35,8 +35,9 @@ private:
     InputMethodManagerV2 *q;
 };
 
-InputMethodManagerV2::InputMethodManagerV2(QObject *parent)
+InputMethodManagerV2::InputMethodManagerV2(Core *core, QObject *parent)
     : QObject(parent)
+    , m_core(core)
     , d(new InputMethodManagerV2Private(this))
 {
 }
@@ -44,3 +45,8 @@ InputMethodManagerV2::InputMethodManagerV2(QObject *parent)
 InputMethodManagerV2::~InputMethodManagerV2() { }
 
 INIT_FUNCS(InputMethodManagerV2)
+
+InputMethodV2 *InputMethodManagerV2::getInputMethodV2BySeat(struct ::wl_resource *seat)
+{
+    return m_inputmethods.at(seat);
+}

@@ -4,13 +4,15 @@
 #ifndef COMPOSITOR_H
 #define COMPOSITOR_H
 
+#include "Core.h"
+
 #include <QtWaylandCompositor/QWaylandCompositor>
 
 class TextInputManagerV3;
 class InputMethodManagerV2;
 class VirtualKeyboardManagerV1;
 
-class Compositor : public QWaylandCompositor
+class Compositor : public QWaylandCompositor, public Core
 {
     Q_OBJECT
 
@@ -20,10 +22,13 @@ public:
 
     void create() override;
 
+    TextInputManagerV3 *getTextInputManagerV3() override;
+    InputMethodManagerV2 *getInputMethodManagerV2() override;
+
 private:
-    TextInputManagerV3 *m_textInputManager;
-    InputMethodManagerV2 *m_textInputMethodManager;
-    VirtualKeyboardManagerV1 *m_virtualKeyboardManager;
+    TextInputManagerV3 *m_textInputManagerV3;
+    InputMethodManagerV2 *m_inputMethodManagerV2;
+    VirtualKeyboardManagerV1 *m_virtualKeyboardManagerV1;
 };
 
 #endif // COMPOSITOR_H

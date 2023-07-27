@@ -35,9 +35,10 @@ private:
     InputMethodKeyboardGrabV2 *q;
 };
 
-InputMethodKeyboardGrabV2::InputMethodKeyboardGrabV2(QObject *parent)
+InputMethodKeyboardGrabV2::InputMethodKeyboardGrabV2(struct ::wl_resource *seat, QObject *parent)
     : QObject(parent)
     , d(new InputMethodKeyboardGrabV2Private(this))
+    , m_seat(seat)
     , m_grabber(new X11KeyboardGrabber(this))
 {
     connect(m_grabber,

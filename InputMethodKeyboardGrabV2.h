@@ -19,13 +19,14 @@ class InputMethodKeyboardGrabV2 : public QObject
     friend class InputMethodKeyboardGrabV2Private;
 
 public:
-    InputMethodKeyboardGrabV2(QObject *parent);
+    InputMethodKeyboardGrabV2(struct ::wl_resource *seat, QObject *parent);
     ~InputMethodKeyboardGrabV2();
 
     INIT_FUNCS_DEF
 
 private:
     std::unique_ptr<InputMethodKeyboardGrabV2Private> d;
+    struct ::wl_resource *m_seat;
     X11KeyboardGrabber *m_grabber;
 
     void onX11KeyEvent(int keycode, bool isRelease);

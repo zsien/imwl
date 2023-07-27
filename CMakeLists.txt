@@ -12,6 +12,7 @@ pkg_check_modules(xcb-xinput REQUIRED IMPORTED_TARGET xcb-xinput)
 qt_add_executable(imwl
     main.cpp
     common.cpp common.h
+    Core.h
     Compositor.cpp Compositor.h
     TextInputManagerV3.cpp TextInputManagerV3.h
     TextInputV3.cpp TextInputV3.h
